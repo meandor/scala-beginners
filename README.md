@@ -6,6 +6,8 @@ The official Scala beginners guide is a great guide for your first step into the
 
 http://docs.scala-lang.org/getting-started.html
 
+Another great starting point for Scala is this tutorial: https://www.tutorialspoint.com/scala/
+
 ## IDE
 Jetbrains has a community edition for IntelliJ which will be sufficient for Scala programming
 
