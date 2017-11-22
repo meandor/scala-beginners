@@ -211,7 +211,7 @@ computing to this kind of exercise.
 
 You should execute the whole `LibrarySuite` and check out the time it takes to execute each test.    
 
-My setting showed speed ups of up to 2 for the parallel computation.
+My setup showed speed ups of up to 2 for the parallel computation.
 
 ## Links
 * https://alvinalexander.com/scala/scala-parallel-programming-collections-par-performance
