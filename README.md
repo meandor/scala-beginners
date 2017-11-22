@@ -1,5 +1,5 @@
 # Scala Beginners
-Scala Introduction for Beginners
+Scala Introduction for Beginners. The code that is created for in this tutorial can be found in this repository.
 
 ## Official Beginners Guide
 The official Scala beginners guide is a great guide for your first step into the Scala world. 
