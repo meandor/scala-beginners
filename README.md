@@ -104,3 +104,111 @@ IntelliJ should automatically rebuild your project with gradle, after you have d
 should be a dialog popping up telling you to import the changes or use auto-import.
 
 Now we are ready to get productive and write some code!
+
+### Calculate some numbers
+We want to write a function, that adds a constant number to a list of numbers.
+
+Lets start by writing a test first. Open the `LibrarySuite` file in the `test` directory.
+
+Gradle created this file. Gradle thinks we want to use JUnit for testing. Gradle is stupid.
+Replace the whole content of the file with this:
+````scala
+import org.scalatest.{FeatureSpec, FunSuite, Matchers}
+
+class LibrarySuite extends FeatureSpec with Matchers {
+  feature("someLibraryMethod that does something") {
+    scenario("always true") {
+      def library = new Library()
+
+      library.someLibraryMethod() shouldBe true
+    }
+  }
+}
+
+```` 
+
+This basically does the same as the code before but without any JUnit. It tests the `someLibraryMethod()`
+of the `Library` class and checks if it returns `true`. 
+
+We will add a new test, that will call a function `addConstantNumber()` from the `Library` class:
+````scala
+...
+  feature("add a constant number to a list of numbers") {
+    scenario("add 42 to a list of 10 numbers") {
+      def library = new Library()
+
+      library.addConstantNumber(42, List(1, 2, 42)) shouldBe List(43, 44, 84)
+    }
+  }
+...
+````
+
+IntelliJ will mark you some stuff in a bright red color. Click on `addConstantNumber` and press
+`alt + enter`. This will open a menu. Just click `enter` again to create the `addConstantNumber`
+function in the `Library` class.
+
+Now just name the parameters and try to make the test green. You can execute the test by clicking
+on the test function in the `LibrarySuite` class and pressing `ctrl + shift + f10`.
+
+**_!!!SPOILER ALERT!!!_**
+
+Your implementation should look something like this:
+
+````scala
+def addConstantNumber(constantNumber: Int, numberList: List[Int]): List[Int] = {
+  numberList.map(number => number + constantNumber)
+}
+````
+Map maps every element of the list to a new value. The new value is the old value plus our constant
+number.
+
+Now lets add a new scenario to our feature test which will add a lot of numbers:
+
+````scala
+...
+    scenario("add 42 to a list of 3000000 numbers") {
+      def library = new Library()
+
+      library.addConstantNumber(42, (1 to 3000000).toList) shouldBe (43 to 3000042).toList
+    }
+...
+````
+This will add 42 to 3,000,000 numbers. The test should take more than a second to compute,
+depending on your pc. The run view of IntelliJ that opens when you execute the test should
+have a number next to the test which will tell you how long it took to execute the test.
+
+### Lets go parallel!
+The same task could be done in parallel. For that the numbers can be divided in smaller
+chunks of numbers and to those smaller chunks the constant number can be added concurrently.
+
+For that we start again by adding a new feature to the `LibrarySuite` test:
+````scala
+  feature("parallelly add a constant number to a list of numbers") {
+    scenario("add 42 to a list of 10 numbers") {
+      def library = new Library()
+
+      library.addConstantNumberParallel(42, List(1, 2, 42)) shouldBe List(43, 44, 84)
+    }
+
+    scenario("add 42 to a list of 100000 numbers") {
+      def library = new Library()
+
+      library.addConstantNumberParallel(42, (1 to 3000000).toList) shouldBe (43 to 3000042).toList
+    }
+  }
+````
+Notice that we have to create a new function called `addConstantNumberParallel`!
+
+Add a new function to the `Library` class:
+````scala
+  def addConstantNumberParallel(constantNumber: Int, numberList: List[Int]): ParSeq[Int] = {
+    numberList.par.map(number => number + constantNumber)
+  }
+````
+By calling `.par` on `numberList` we create a parallel list, that can do parallel
+computations on the list like we want. This is all you have to change to introduce parallel
+computing to this kind of exercise.
+
+You should execute the whole `LibrarySuite` and check out the time it takes to execute each test.    
+
+My setting showed speed ups of up to 2 for the parallel computation.
